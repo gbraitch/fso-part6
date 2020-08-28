@@ -1,26 +1,28 @@
-const initialState = {
-  message: 'Initial Notification',
-  timeoutID: ''
-}
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = null, action) => {
   switch (action.type) {
     case 'RESET_MESSAGE':
-      return { message: '', timeoutID: ''}
+      return null
     case 'UPDATE_MESSAGE':
-      return { message: action.data.message, timeoutID: action.data.timeoutID}
+      return action.data
     default:
       return state
   }
 }
 
+let timeoutID
+
 export const setNotification = (message, t) => {
   return async dispatch => {
     dispatch ({
       type: 'UPDATE_MESSAGE',
-      data: { message }
+      data: message
     })
-    setTimeout(() => {
+
+    if (timeoutID) {
+      clearTimeout(timeoutID)
+    }
+
+    timeoutID = setTimeout(() => {
       dispatch({
         type: 'RESET_MESSAGE'
       })
